@@ -20,4 +20,5 @@ AListApartItem = ItemClassFactory('AListApartItem', ['title', 'url', 'postnum', 
 CssTricksArticlesItem = ItemClassFactory('CssTricksArticlesItem', ['title', 'url', 'postnum', 'date'])
 
 # jp av
-JvItem = ItemClassFactory('JvItem', 'title,slug,category,preview,downloadurl,actor')
+JpAvItem = ItemClassFactory('JpAvItem', 'title,slug,category,preview,downloadurl,actor'.split(','))
+JpAvItemId = ItemClassFactory('JpAvItemId', ['id'])

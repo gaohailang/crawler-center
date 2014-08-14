@@ -13,8 +13,9 @@ NEWSPIDER_MODULE = 'crawler_center.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'crawler_center (+http://www.yourdomain.com)'
+# DOWNLOAD_DELAY = 1.25
+# CONCURRENT_REQUESTS = 8
 
 ITEM_PIPELINES = [
-    'crawler_center.pipelines.FilterDupPipeline',
     'crawler_center.pipelines.MongoPipeline',
 ]
