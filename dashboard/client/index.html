@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Visualization By API/Dynamic Data With Configuration!</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://todc.github.io/todc-bootstrap/dist/css/todc-bootstrap.min.css">
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="http://www.chartjs.org/assets/Chart.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highcharts/4.0.3/highcharts.js"></script>
+</head>
+<body>
+    <div class="container" ng-controller="idxCtrl">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+            <h3 class="text-muted">Fluent Vis-Dashboard</h3>
+          </div>
+
+          <div class="jumbotron">
+            <h1>Jumbotron heading</h1>
+            <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+            <p><a class="btn btn-lg btn-success" href="#" role="button" ng-click="popSettingModal()">创建 Chart</a></p>
+          </div>
+
+          <div class="row marketing">
+            <div class="col-lg-6">
+              <h4>Subheading</h4>
+              <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+              <h4>Subheading</h4>
+              <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+              <h4>Subheading</h4>
+              <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+            </div>
+
+            <div class="col-lg-6">
+              <h4>Subheading</h4>
+              <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+              <h4>Subheading</h4>
+              <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+              <h4>Subheading</h4>
+              <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+            </div>
+          </div>
+
+          <div class="footer">
+            <p>&copy; SivaGao - Have Fun! 2014</p>
+          </div>
+
+        </div> <!-- /container -->
+
+        <script type="text/ng-template" id="snippet/setting-modal.html">
+            <div class="modal-header">
+                <h3 class="modal-title">设置 Chart</h3>
+            </div>
+            <div class="modal-body">
+                <tabset>
+                    <tab heading="highcharts" select="changeVisType('highcharts')">
+                        <form role="form">
+                          <div class="form-group">
+                            <label for="dataField">Demo Data</label>
+                            <textarea name="dataField" class="form-control" id="dataField"
+                                ng-model="form.data"  rows="10" cols="50"> </textarea>
+                          </div>
+                          <div class="form-group vis-preview-container">
+                              <div id="highcharts-vis"></div>
+                          </div>
+                          <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </tab>
+                    <tab heading="chart.js" select="changeVisType('chartjs')">
+                        <form role="form">
+                          <div class="form-group">
+                            <label for="dataField">Demo Data</label>
+                            <textarea name="dataField" class="form-control" id="dataField"
+                                ng-model="form.data"  rows="10" cols="50"> </textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="configField">Config Code</label>
+                            <textarea name="configField" class="form-control" id="configField"
+                                ng-model="form.option" rows="10" cols="50"> </textarea>
+                          </div>
+                          <div class="form-group vis-preview-container">
+                              <canvas id="chartjs-vis" width="550" height="400"></canvas>
+                          </div>
+                          <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </tab>
+                </tabset>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">确定</button>
+                <button class="btn btn-warning" ng-click="cancel()">取消</button>
+            </div>
+        </script>
+
+
+        <script src="chart-conf.js"></script>
+        <script type="text/javascript">
+            var app = angular.module('fluentDashApp', ['ui.bootstrap']);
+
+            app.controller('idxCtrl',function($scope, $modal) {
+                $scope.popSettingModal = function() {
+                    $modal.open({
+                        templateUrl: 'snippet/setting-modal.html',
+                        controller: 'settingModalCtrl',
+                        size: 'lg'
+                    })
+                };
+            });
+
+            app.controller('settingModalCtrl', function($scope, $timeout) {
+                var ctx;
+                $timeout(function() {
+                    ctx = document.getElementById("chartjs-vis").getContext("2d");
+                });
+                $scope.form = {};
+                $scope.changeVisType = function(val) {
+                    // if($scope.form=={}) return;
+                    $scope.currentVisType = val;
+                    $scope.form.data = JSON.stringify(configDict[val].data, null, 4);
+                    $scope.form.option = JSON.stringify(configDict[val].option||{}, null, 4);
+                };
+                $scope.changeVisType('highcharts');
+                $scope.$watch('form', function(form) {
+                    if(!form) return;
+                    var currentVisType = $scope.currentVisType;
+                    try{
+                        eval('var data ='+form.data);
+                        if(currentVisType === 'highcharts') {
+                            $timeout(function() {
+                                $('#highcharts-vis').highcharts(data);
+                            });
+                        }
+                        if(currentVisType === 'chartjs') {
+                            eval('var option ='+form.option);
+                            $timeout(function() {
+                                new Chart(ctx).Bar(data, option);
+                            });
+                        }
+                    }catch(e) {
+                        console.log('Error: '+e);
+                    }
+                }, true);
+            });
+
+            angular.bootstrap(document, ['fluentDashApp']);
+        </script>
+</body>
+</html>
+
