@@ -1,0 +1,50 @@
+<div class="row marketing">
+  <table class="table table-bordered film-table-view" style="table-layout: fixed;"
+      infinite-scroll="listView.nextPage()"
+      infinite-scroll-disabled="listView.busy"
+      infinite-scroll-distance="0">
+      <tr>
+          <th ng-click="toggleRowSort('title')" class="col-md-3">标题
+              <i class="icon-sort" tooltip="click to sort."
+                  tooltip-placement="right">
+              </i>
+          </th>
+          <th class="col-md-2">演员</th>
+          <th class="col-md-2">类型</th>
+          <th class="col-md-1">下载</th>
+          <th class="col-md-4">预览</th>
+      </tr>
+      <tr ng-repeat="film in listView.items track by $index | orderBy:sortType:sortReverse">
+          <td>
+            <span>
+              <i series-icon-link slug="{{film.slug}}"></i>{{film.title}}
+            </span>
+          </td>
+          <td>
+            <a ng-href="/#actor/{{i}}"
+                ng-repeat="i in film.actor track by $index">
+              <span class="label label-default">{{i}}</span>
+            </a>
+          </td>
+          <td>
+            <a ng-href="/#category/{{i}}"
+                ng-repeat="i in film.category track by $index">
+              <span class="label label-default">{{i}}</span>
+            </a>
+          </td>
+          <td>
+            <!-- popover="'复制成功了！'" popover-trigger="click" -->
+              <button class="btn" ng-if="film.downloadurl"
+                  clip-copy="getDonwloadText(film)" clip-click="infoCopied()">复制
+              </button>
+              <a href="#" ng-if="!film.downloadurl">暂无</a>
+          </td>
+          <td>
+              <a ng-href="{{film.preview||forbidImgSrc}}" class="photo-hook">
+                <img ng-src="{{film.preview||forbidImgSrc}}" alt="{{film.title}}" width="20">
+              </a>
+          </td>
+      </tr>
+  </table>
+  <double-bounce-spinner ng-show="listView.busy"></double-bounce-spinner>
+</div>

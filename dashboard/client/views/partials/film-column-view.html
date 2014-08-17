@@ -1,0 +1,15 @@
+<div class="film-column-view">
+  <ul infinite-scroll="listView.nextPage()"
+    infinite-scroll-disabled="listView.busy"
+    infinite-scroll-distance="0">
+    <li class="film-item" ng-class="checkColumnNum()"
+      ng-repeat="film in listView.items track by $index | orderBy:sortType:sortReverse" ns-popover
+      ng-popover="views/partials/film-info-table.html"
+      placement="top">
+        <a ng-href="{{film.preview||forbidImgSrc}}" class="photo-hook">
+          <img ng-src="{{film.preview||forbidImgSrc}}" alt="{{film.title}}" width="400">
+        </a>
+    </li>
+  </ul>
+  <double-bounce-spinner ng-show="listView.busy"></double-bounce-spinner>
+</div>
