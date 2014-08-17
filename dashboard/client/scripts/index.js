@@ -26,6 +26,10 @@ app.config(function($routeProvider, $locationProvider) {
             controller: 'seriesCtrl'
             // series with column view
         })
+        .when('/profile/likes', {
+            templateUrl: '/views/likes.html',
+            controller: 'likesCtrl'
+        })
         .when('/report', {
             templateUrl: '/views/report.html'
             // report with multi-chart
@@ -37,6 +41,7 @@ app.config(function($routeProvider, $locationProvider) {
 
 app.run(function($rootScope) {
     $rootScope.forbidImgSrc = 'http://24.media.tumblr.com/tumblr_m2lim4Wocd1qjev1to1_1280.jpg';
+    $rootScope.currentUserName = 'sivagao';
 });
 
 app.factory('ListViewAPI', function($http, $timeout) {
@@ -47,6 +52,7 @@ app.factory('ListViewAPI', function($http, $timeout) {
 
     function ListView(base) {
         this.baseUrl = base;
+        this.finishBase = false;
         this.items = [];
         this.newItems = [];
         this.links;
@@ -68,6 +74,10 @@ app.factory('ListViewAPI', function($http, $timeout) {
             } else {
                 url = API_PREFIX + nextHref;
             }
+        } else {
+            // Todo: hasLoadAll indicator
+            if (this.finishBase) return;
+            this.finishBase = true;
         }
 
         $http.get(url).then(function(resp) {
@@ -108,6 +118,8 @@ app.controller('categoryCtrl', function($scope, $routeParams) {
 app.controller('seriesCtrl', function($scope, $routeParams) {
     $scope.currentSeries = $routeParams.name;
 });
+
+app.controller('likesCtrl', function($scope, $routeParams) {});
 
 app.controller('settingModalCtrl', function($scope, $timeout) {
     var ctx;
@@ -238,6 +250,7 @@ function filmListViewCtrl($scope, $element, $attrs, ListViewAPI, $timeout, $rout
         if (!val) return;
         $scope.listView.items = $scope.listView.items.concat(val);
         $timeout(function() {
+            // Todo: fix hash to back home exception
             // $element.photobox('a.photo-hook');
         });
     }, true);

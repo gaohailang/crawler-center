@@ -63,10 +63,9 @@ def generalJsonResponse(ret, status=200):
     return enableCORS(resp)
 
 def normal_resource_handler(cursor):
-    # todo: trans likes list into islike flag variable
     cutCursor, nextLink, total = paginationResource(cursor)
 
-    _items = [i for i in cutCursor]
+    _items = [processFilm(i) for i in cutCursor]
     _links = dict(next=nextLink)
     _meta = dict(total=total)
 
@@ -75,13 +74,23 @@ def normal_resource_handler(cursor):
     resp = enableCORS(resp)
     return resp
 
+def processFilm(film):
+    # 1: transLikesForUser
+    # trans likes list into islike flag variable
+    if film.has_key('likes') and 'sivagao' in film['likes']:
+        film['isLike'] = True
+    film.pop('likes','')
+        # or del?！
+    # 2: todo
+    return film
+
 def paginationResource(cursor):
     page = request.args.get('page', default=1, type=int)
     size = request.args.get('size', default=40, type=int)
     offset = page*size - size
     total = cursor.count()
     if total > offset:
-        next = dict(href=request.base_url+querydef(page=page + 1))
+        next = dict(href=request.base_url+querydef(max_results=size, page=page + 1))
     else:
         next = None
     return cursor.skip(offset).limit(size), next, total
