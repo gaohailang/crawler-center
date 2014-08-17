@@ -1,0 +1,10 @@
+<div>
+  <div class="jumbotron">
+    <h1>Category - {{currentCategory}}</h1>
+    <p class="lead">Crawl data, Aggregation Data, Chartize Data, Then Have Fun with Data. export it with much more fun way</p>
+    <p><a class="btn btn-lg btn-success" href="#" role="button" ng-click="popSettingModal()">创建 Chart</a></p>
+  </div>
+
+  <div film-table-view api="/api/category/{{currentCategory}}/films"></div>
+  <!-- <div film-column-view api="/api/category/{{currentCategory}}/films"></div> -->
+</div>
