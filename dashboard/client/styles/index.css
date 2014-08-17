@@ -1,0 +1,25 @@
+.label+.label{
+    display: inline-block;
+    margin-left: 5px;
+}
+td img {
+    width: 100%;
+}
+
+.film-column-view ul{
+    padding: 0;
+}
+.film-column-view .film-item {
+    display: inline-block;
+    width: 49.5%;
+    text-align: center;
+    margin: 5px 2px;
+}
+.film-column-view .film-item-column3{
+    width: 33%;
+    margin: 4px 1px;
+}
+
+.film-column-view .film-item img {
+    width: 100%;
+}
