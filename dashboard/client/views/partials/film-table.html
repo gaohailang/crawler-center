@@ -11,7 +11,7 @@
           </th>
           <th class="col-md-2">演员</th>
           <th class="col-md-2">类型</th>
-          <th class="col-md-1">下载</th>
+          <th class="col-md-1">操作</th>
           <th class="col-md-4">预览</th>
       </tr>
       <tr ng-repeat="film in listView.items track by $index | orderBy:sortType:sortReverse">
@@ -32,11 +32,17 @@
               <span class="label label-default">{{i}}</span>
             </a>
           </td>
-          <td>
+          <td class="table-view-action">
             <!-- popover="'复制成功了！'" popover-trigger="click" -->
               <button class="btn" ng-if="film.downloadurl"
                   clip-copy="getDonwloadText(film)" clip-click="infoCopied()">复制
               </button>
+              <button class="btn" ng-if="!film.isLike"
+                tooltip="添加到喜欢中，等待下次再看"
+                ng-click="likeFilm(film)">
+                喜欢
+              </button>
+              <span ng-if="film.isLike">已喜欢</span>
               <a href="#" ng-if="!film.downloadurl">暂无</a>
           </td>
           <td>

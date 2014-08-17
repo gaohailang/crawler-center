@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # from flask import Flask
-from flask import json, request
+from flask import json, request, Response
 from eve import Eve
 from eve.utils import parse_request, querydef
 
@@ -9,7 +9,7 @@ from pymongo import Connection
 import pymongo
 from bson.objectid import ObjectId
 MongoCon = Connection('localhost', 27017)
-Collection = MongoCon.jp_av.items
+Collection = MongoCon.jp_av.films
 
 import json
 class JSONEncoder(json.JSONEncoder):
@@ -30,11 +30,19 @@ def get_matchstr_films(val):
     cursor = Collection.find({'slug': {'$regex': '^'+val}}).sort('slug', pymongo.DESCENDING)
     return normal_resource_handler(cursor)
 
-@app.route('/api/film/like/<slug>', methods=['POST'])
+@app.route('/api/user/<username>/like/films', methods=['GET'])
+def get_user_like_films(username):
+    cursor = Collection.find({'likes': {'$in': [username]}})
+    return normal_resource_handler(cursor)
+
+@app.route('/api/film/like/<slug>', methods=['POST', 'OPTIONS'])
 def like_film(slug):
     # hardcore with username:sivagao
     try:
-        Collection.find({'slug': slug}, {'$push': {'likes': 'sivagao'}})
+        # todo: { "$err" : "Unsupported projection option: likes", "code" : 13097 }
+        # change $push to $addToSet
+        # delete likes, $unset: {'likes':1}
+        Collection.update({'slug': slug}, {'$addToSet': {'likes': 'sivagao'}})
         return succResponse()
     except:
         return errorResponse('mongo')
@@ -50,10 +58,12 @@ def errorResponse(kind):
 def generalJsonResponse(ret, status=200):
     # or use abort(430), @app.errorhandler(430) decorator
     # flask.Response(response=ret, status=200, headers=None, mimetype='application/json', content_type=None, direct_passthrough=False)
-    return Response(response=json.dumps(ret),\
+    resp =Response(response=json.dumps(ret),\
         status=status, mimetype="application/json")
+    return enableCORS(resp)
 
 def normal_resource_handler(cursor):
+    # todo: trans likes list into islike flag variable
     cutCursor, nextLink, total = paginationResource(cursor)
 
     _items = [i for i in cutCursor]

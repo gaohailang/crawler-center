@@ -193,7 +193,7 @@ app.directive('filmTableView', function() {
 });
 
 
-function filmListViewCtrl($scope, $element, $attrs, ListViewAPI, $timeout, $routeParams) {
+function filmListViewCtrl($scope, $element, $attrs, ListViewAPI, $timeout, $routeParams, $http) {
     $scope.listView = new ListViewAPI(window.API_HOST + $scope.api);
 
     /*
@@ -223,6 +223,14 @@ function filmListViewCtrl($scope, $element, $attrs, ListViewAPI, $timeout, $rout
 
     $scope.getDonwloadText = function(i) {
         return i.downloadurl;
+    };
+
+    $scope.likeFilm = function(film) {
+        $http.post(API_HOST + '/api/film/like/' + film.slug).then(function() {
+            film.isLike = true;
+        }, function(resp) {
+            alert('Something is wrong');
+        });
     };
 
     // first, we just add it - then with diff time popup animation

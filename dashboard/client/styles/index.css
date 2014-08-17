@@ -23,3 +23,8 @@ td img {
 .film-column-view .film-item img {
     width: 100%;
 }
+
+.table-view-action>*{
+    display: block;
+    margin: 3px 0;
+}
