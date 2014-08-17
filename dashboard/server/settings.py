@@ -1,0 +1,24 @@
+
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
+# MONGO_USERNAME = 'user'
+# MONGO_PASSWORD = 'user'
+MONGO_DBNAME = 'jp_av'
+
+API_VERSION = 'v1'
+URL_PREFIX = 'api'
+DOMAIN = {
+    'films': {}
+}
+
+# ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
+
+X_DOMAINS = '*'
+
+PAGINATION = False
+PAGINATION = True
+PAGINATION_LIMIT = 100
+PAGINATION_DEFAULT = 40
+
+CACHE_CONTROL = 'max-age=1000,must-revalidate'
+CACHE_EXPIRES = 1000
