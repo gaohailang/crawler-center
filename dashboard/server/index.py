@@ -35,6 +35,24 @@ def get_user_like_films(username):
     cursor = Collection.find({'likes': {'$in': [username]}})
     return normal_resource_handler(cursor)
 
+@app.route('/api/diy/films', methods=['GET'])
+def get_diy_films():
+    try:
+        query = request.args.get('query','{}')
+        # loaded query include special character like $
+        MongoCon.jp_av.misc.insert({'type': 'query_history', 'data': query})
+        query = json.loads(query)
+        cursor = Collection.find(query)
+        return normal_resource_handler(cursor)
+    except:
+        return errorResponse('json decode')
+
+@app.route('/api/diy/history', methods=['GET'])
+def get_diy_hiistory():
+    cursor = MongoCon.jp_av.misc.find({'type': 'query_history'})
+    # todo duplicate remove
+    return succResponse(data=list(set([i.get('data') for i in cursor])))
+
 @app.route('/api/film/like/<slug>', methods=['POST', 'OPTIONS'])
 def like_film(slug):
     # hardcore with username:sivagao

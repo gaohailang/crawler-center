@@ -26,6 +26,11 @@ app.config(function($routeProvider, $locationProvider) {
             controller: 'seriesCtrl'
             // series with column view
         })
+        .when('/diy', {
+            templateUrl: '/views/diy.html',
+            controller: 'diyCtrl'
+            // series with column view
+        })
         .when('/profile/likes', {
             templateUrl: '/views/likes.html',
             controller: 'likesCtrl'
@@ -117,6 +122,19 @@ app.controller('categoryCtrl', function($scope, $routeParams) {
 
 app.controller('seriesCtrl', function($scope, $routeParams) {
     $scope.currentSeries = $routeParams.name;
+});
+
+app.controller('diyCtrl', function($scope, $routeParams, $http) {
+    $scope.currentQuery = $routeParams.query;
+    $scope.currentDIYAPI = '/api/diy/films' + '?query=' + $routeParams.query;
+
+    $http.get(API_HOST + '/api/diy/history').then(function(resp) {
+        $scope.queryHistory = resp.data.data;
+    });
+
+    $scope.buildDiyUrl = function(i) {
+        return '#diy?query=' + i;
+    };
 });
 
 app.controller('likesCtrl', function($scope, $routeParams) {});
